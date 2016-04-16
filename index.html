@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>gister by weakish</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>gister</h1>
+        <p>command line tool for github gists</p>
+
+        <p class="view"><a href="https://github.com/weakish/gister">View the Project on GitHub <small>weakish/gister</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/weakish/gister/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/weakish/gister/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/weakish/gister">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="gister" class="anchor" href="#gister" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>gister</h1>
+
+<p><code>gister</code> is a command line tool for managing GitHub gists.</p>
+
+<p>Based on <a href="https://github.com/defunkt/gist">gist.rb</a> by <a href="https://github.com/defunkt">@defunkt</a>, this tool helps you to manage a local copy of your gists.</p>
+
+<p>After publishing files to gist.github.com, this tool will:</p>
+
+<ul>
+<li>automatically clone the gist repository to local</li>
+<li>index the content of your gist for code search</li>
+<li>fetch meta info (e.g. description, url) of the gist from GitHub and add them to <code>gists.list</code> </li>
+</ul>
+
+<p>You can also use <code>gister</code> to sync your gists between gist.github.com and your machine.</p>
+
+<h2>
+<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dependencies</h2>
+
+<ul>
+<li>curl</li>
+<li>git</li>
+<li><a href="https://github.com/defunkt/gist">gist.rb</a></li>
+<li><a href="https://code.google.com/p/codesearch/">csearch</a></li>
+<li><a href="http://stedolan.github.io/jq/">jq</a></li>
+</ul>
+
+<p>For Linux, BSD, etc, you also need <code>xclip</code> or <code>xsel</code>.
+For Cygwin, you need putclip/getclip provided by cygutils-extra.
+(Mas OS X users should be fine with the preinstalled pbcopy/pbpaste.)</p>
+
+<p>Mac OS X users also need GNU versions of <code>sed</code> and <code>date</code>, a.k.a <code>gsed</code> and
+<code>gdate</code>.</p>
+
+<p>Note: <code>xsel</code> users should use <code>gist.rb</code> v4.1.2+, since there is <a href="https://github.com/defunkt/gist/pull/151">a bug bitting xsel users in previous versions</a>.</p>
+
+<h2>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h2>
+
+<h3>
+<a id="fetch-the-source" class="anchor" href="#fetch-the-source" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>fetch the source</h3>
+
+<pre><code>git clone https://github.com/weakish/gister.git
+cd gister
+sudo rake install
+</code></pre>
+
+<p>If you want to install <code>gister</code> to a place other than <code>/usr</code>, you can use <code>sudo rake install[prefix]</code> instead, e.g. <code>sudo rake install[/usr/local]</code>.</p>
+
+<p>Arch users can install via <a href="https://aur.archlinux.org/packages/gister/">AUR</a>, thanks to <a href="https://github.com/wenLiangcan">weiLiangcan</a>. </p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a id="init" class="anchor" href="#init" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>init</h3>
+
+<p>For the first time, you need to run <code>gister init</code> to associate your GitHub account and configure the directory to store local copies of your gists.</p>
+
+<p>After that, you may run <code>gister sync</code> to fetch all your gists to local.</p>
+
+<p>Warn: <code>sync</code> can only fetch up to 10 million gists for you. If you have more than 10 million gists, you need to modify the source of <code>gister</code> yourself.</p>
+
+<h3>
+<a id="publish" class="anchor" href="#publish" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>publish</h3>
+
+<p>Whenever you want to publish a gist, just use</p>
+
+<pre><code>gister description file.txt ...
+</code></pre>
+
+<p>This will create the gist with the provided description, clone the gist repo, put the gistid to clipborad, and open the url in your <code>x-www-browser</code>.</p>
+
+<p>Note: you must provide gist description, otherwise <code>gister</code> will fail.</p>
+
+<p>Hint: <code>gister</code> will pass all arguments to gist as <code>gist -c -o -d description ...</code>, so you can use other options that gist understands, e.g. <code>gister descrption -P</code> will work.</p>
+
+<p>If you've edited your gists at <code>gist.github.com</code> or local machine, without pull/push changesets, you can sync all your gists via <code>gister sync</code>.</p>
+
+<p>If you've deleted your gists at <code>gist.github.com</code>, after <code>gister sync</code>, the directories of deleted gists at your local machine will be marked with a prefix <code>_</code>.</p>
+
+<h3>
+<a id="search" class="anchor" href="#search" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>search</h3>
+
+<p>Search all of your gists:</p>
+
+<pre><code>gister search regexp
+</code></pre>
+
+<h3>
+<a id="migrate" class="anchor" href="#migrate" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>migrate</h3>
+
+<p>From version 1.0.0, <code>gister</code> uses a different storage structure.
+If you have used <code>gister &lt;1.0.0</code>, then you need to run this command to migrate:</p>
+
+<pre><code>gister migrate
+</code></pre>
+
+<h2>
+<a id="storage" class="anchor" href="#storage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Storage</h2>
+
+<pre><code>/path/to/your/gists
+|-- gists.list  # a list of all your gists (including meta info) 
+|-- repo # git repositories of your gists
+|-- tree # working directory of your gist repositories
+    |-- 123456 # an example of gist
+    |-- _123567890 # an example of gist which you have deleted on gist.github.com
+    |-- ...
+`-- .csearchindex # code search index
+</code></pre>
+
+<h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributing</h2>
+
+<p>Fork and/or send pull requests or issues on github: <a href="https://github.com/weakish/gister">https://github.com/weakish/gister</a></p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/weakish">weakish</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
